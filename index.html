@@ -1,9 +1,7 @@
-// https://www.datamap.io/presentation/oakland_20160412
-
 <!DOCTYPE html>
 <meta charset="utf-8">
 <head>
-  <title>San Francisco Precincts / Prop F</title>
+  <title>Mumbai Ward Level Population</title>
 <style>
 
 body {
@@ -41,7 +39,7 @@ body {
 </head>
 
 <body>
-<div id="mapcanvas" ></div> 
+<!--<div id="mapcanvas" ></div> -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/1.6.19/topojson.min.js"></script>
 <script src="https://d3js.org/queue.v1.min.js"></script>
@@ -50,33 +48,31 @@ body {
 
 
 
-var width = 960,
-    height = 600;
+var width = 1060,
+    height = 800;
 
 // PROJECTION   
-
-// SF_DOE_Precincts_20120702.prj
-// You can also center the map on: -122.51494800050519,37.70813100002812 like in the TopoJSON
-
+/*
+A Different projection which doesn't work very well for Mumbai
 var projection = d3.geo.conicConformal() 
     .rotate([0, 0, 0])  
-    .center([-122.433701, 37.767683])
-    .scale(235000)
+    .center([72.8777, 19.089]) // Approximately the coordinates of Mumbai (slightly North)
+    .scale(90000)
     .parallels([37.06666666666667, 38.43333333333333])
     .translate([width / 2, height / 2])
     .precision(.1);
-
+*/
 // MERCATOR
 var projection = d3.geo.mercator()
-    .center([72.8777, 19.076])
-    .scale(211000)
+    .center([72.8777, 19.089]) // Approximately the coordinates of Mumbai (slightly North)
+    .scale(90000)
     .translate([width / 2, 310]);
 
 var path = d3.geo.path()
     .projection(projection);
 
 
-var svg = d3.select("#mapcanvas").append("svg")
+var svg = d3.select("body").append("svg")
     .attr("width", width)
     .attr("height", height);
 
@@ -87,25 +83,24 @@ svg.append("text")
     .attr("text-anchor", "start")  
     .style("font-size", "16px") 
     .style("text-decoration", "none")  
-    .text("Prop F, Election Day, November 3, 2015");
+    .text("Mumbai Ward level population, 2011");
 
 
-
+// Defining the scale
 var linear = d3.scale.linear()
-             .domain([0, 0.5, 1])
-             .range(["red", "white", "green"]);
+             .range(["beige", "red"]);
 
+/*
 // Linear 2
 // Excluding outliers (but please check the data first)
 var linear2 = d3.scale.linear()
-             .domain([0.25, 0.5, 0.75])
              .range(["red", "white", "green"]);
 
-
+// A scale to try with different thresholds. May be interesting to do this
 var threshold = d3.scale.threshold()
              .domain([0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1])
              .range(["#8e0152", "#c51b7d", "#de77ae", "#f1b6da", "#fde0ef", "#f7f7f7", "#e6f5d0", "#b8e186", "#7fbc41", "#4d9221", "#276419"]);
-
+*/
 
 
 queue()
@@ -113,40 +108,77 @@ queue()
       .defer(d3.csv, 'ward_level_collated.csv') // REPLACE REF WITH DATA
       .await(ready);
 
+// The default property to be mapped
+var property = 'TOT_P';
+
+/**
+*
+* Finds the min and max for the property in the data. 
+* Also assumes that the property has integer values. 
+* @param data
+* @param property
+* @return 
+*/
+function calculate_domain(data, property){
+
+  var d_prop = data.map(function(d){ return parseInt(d[property]);});
+  var ret_value = {};
+
+
+  ret_value['min'] = d3.min(d_prop);
+  ret_value['max'] = d3.max(d_prop);
+  return ret_value;
+};
+
+/**
+*
+* The ready function which after the data is loaded creates all the elements
+* etc. 
+*
+*/
 function ready(error, MAP, DATA) {    // REPLACE REF WITH DATA
   if (error) throw error; 
   console.log(MAP)   // CHECK YOUR MAP
   console.log(DATA)  // CHECK YOUR DATA
 
+  // Set domain for the scales
+  var dom = calculate_domain(DATA, property);
+  linear.domain([dom['min'], dom['max']]);
 
-  var precincts = topojson.feature(MAP, MAP.objects.precinct);  
+  // Mumbai data
+  var mumbai = topojson.feature(MAP, MAP.objects.Mumbai);  
 
-  var pctname = {};
-  DATA.forEach(function(d) { pctname[d.id] = d.precinct_names})
+  var ward_id = {};
+  DATA.forEach(function(d) { ward_id[d.Ward_Alphabet] = d.Ward_Alphabet})
 
-  var nh = {};
-  DATA.forEach(function(d) { nh[d.id] = d.neighborhood})
+  var ward_names = {};
+  DATA.forEach(function(d) { ward_names[d.Ward_Alphabet] = d.Ward_Names})
 
-  var yesp = {};
-  DATA.forEach(function(d) { yesp[d.id] = +d.yes_percentage; });
+  var prop_value = {};
+  DATA.forEach(function(d) { prop_value[d.Ward_Alphabet] = +parseInt(d[property]); });
+  console.log(prop_value);
 
   svg.append("g")
       .attr("class", "precinct")
       .selectAll("path")
-      .data(precincts.features)
+      .data(mumbai.features)
       .enter()
       .append("path")
       .attr("d", path)
   //    Try out the different scales.
-      //.style("fill", function(d) { return linear2(yesp[d.id]); }) // yes percentage
+      .style("fill", function(d) { 
+        return linear(prop_value[d.properties.name]); 
+
+      }) // population
       .append('svg:title').text(function(d) {        
       // return ("GeoID: " + d.id); });
-         return (nh[d.id] + ", " + pctname[d.id] +": " + (yesp[d.id]*100) + "% Yes"); });
+         return (ward_names[d.properties.name] + ", " + ward_id[d.properties.name] +": " + (prop_value[d.properties.name]) + ""); 
+      });
 
 
   //Borders 
   svg.append("path")
-      .datum(topojson.mesh(MAP, MAP.objects.precinct, function(a, b) { return a !== b; }))
+      .datum(topojson.mesh(MAP, MAP.objects.Mumbai, function(a, b) { return a !== b; }))
       .attr("class", "precinct-boundary")
       .attr("d", path);  
 
