@@ -20,33 +20,38 @@ This information was extracted by following the directions here: [https://groups
 Incase the above link is not up, this is the conversation on the thread
 
  
-    Rithika,
+    On Monday, 14 December 2015 00:33:20 UTC+5:30, rithik...@idfcinstitute.org wrote:
+    Hello, 
 
-    You can take a look at the sequence given in the Census Handbook [page 10].
-    http://www.censusindia.gov.in/2011census/dchb/2722_PART_B_DCHB_%20MUMBAI%20(SUBURBAN).pdf
+    I work with a Mumbai based research institute and we are interested in doing some ward level analysis based on Mumbai. 
 
-    Regards,
-    Sumit
+    I've downloaded the Primary census abstract which has ward level info on household amenities. 
+    However I see that the wards are identified as nos. eg. 1048 or 0835 etc. 
+    Wards as I understand, in the BMC are identified as A / B/ M west etc. 
+    Any idea if there is a one to one mapping of the census ward numbers to the BMC ward alphabets? 
 
-        On Monday, 14 December 2015 19:58:19 UTC+5:30, rithik...@idfcinstitute.org wrote:
-        Hey Sumit!
+    Any help will be appreciated! Thank you! :) 
 
-        Just a quick qn, what do we do in case of wards such as M ward, where there is an M East and M West and similar such cases. So will we take the M E before M W because of the alphabetical order. thanks!!
+    Rithika 
 
             On Monday, December 14, 2015 at 2:44:16 PM UTC+5:30, Sumit wrote:
             The first two digits of the ward number given in the Census dataset will match with the BMC's alphabetical list. 
 
             Regards,
             Sumit
+                On Monday, 14 December 2015 19:58:19 UTC+5:30, rithik...@idfcinstitute.org wrote:
+                Hey Sumit!
 
-                On Monday, 14 December 2015 00:33:20 UTC+5:30, rithik...@idfcinstitute.org wrote:
-                Hello, 
+                Just a quick qn, what do we do in case of wards such as M ward, where there is an M East and M West and similar such cases. 
+                So will we take the M E before M W because of the alphabetical order. thanks!!
 
-                I work with a Mumbai based research institute and we are interested in doing some ward level analysis based on Mumbai. 
 
-                I've downloaded the Primary census abstract which has ward level info on household amenities. However I see that the wards are identified as nos. eg. 1048 or 0835 etc. Wards as I understand, in the BMC are identified as A / B/ M west etc. Any idea if there is a one to one mapping of the census ward numbers to the BMC ward alphabets? 
+                    Rithika,
 
-                Any help will be appreciated! Thank you! :) 
+                    You can take a look at the sequence given in the Census Handbook [page 10].
+                    http://www.censusindia.gov.in/2011census/dchb/2722_PART_B_DCHB_%20MUMBAI%20(SUBURBAN).pdf
 
-                Rithika 
+                    Regards,
+                    Sumit
+
 
