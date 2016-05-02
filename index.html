@@ -52,6 +52,16 @@
         position: absolute;
       }
 
+      .axis text {
+        font: 10px;
+      }
+
+      .axis line, .axis path {
+        fill:none;
+        stroke:#000;
+        shape-rendering:crispEdges;
+      }
+
       /*
        Fill ranges for Quantized scale 
        ref: https://bl.ocks.org/mbostock/4060606
@@ -77,6 +87,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/1.6.19/topojson.min.js"></script>
     <script src="https://d3js.org/queue.v1.min.js"></script>
+    <!-- Legend Library http://d3-legend.susielu.com/ -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-legend/1.10.0/d3-legend.js"></script>
 
 
     <script>
@@ -118,7 +130,7 @@
           .attr("text-anchor", "start")  
           .style("font-size", "16px") 
           .style("text-decoration", "none")  
-          .text("Mumbai Ward level population, 2011");
+          .text("Mumbai Ward Level (per Sq. KM), 2011");
 
       // Div for the tooltip 
       var tooltip = d3.select('body').append('div')
@@ -152,7 +164,7 @@
             .await(ready);
 
       // The default property to be mapped
-      var property = 'TOT_P';
+      var property = 'TOT_P_DEN';
 
       /**
       *
@@ -238,6 +250,18 @@
           .datum(topojson.mesh(MAP, MAP.objects.Mumbai, function(a, b) { return a !== b; }))
           .attr("class", "mumbai-boundary")
           .attr("d", path);  
+
+      // Legend 
+      svg.append("g")
+          .attr("class", "legendLinear")
+          .attr("transform", "translate(100, 100)");
+
+      var legendLinear = d3.legend.color()
+                                  .scale(linear)
+                                  .title("Population Density / Sq. KM")
+                                  .labelFormat(d3.format(",.0f"));
+      svg.select(".legendLinear")
+          .call(legendLinear);
 
       };
 
