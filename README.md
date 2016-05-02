@@ -55,4 +55,7 @@ Incase the above link is not up, this is the conversation on the thread
     Regards,
     Sumit
 
+## TODO 
 
+- Legend for Kilometer/Mile scale
+- Comparison of Population density for other cities/countries across the world
