@@ -28,6 +28,10 @@
         /*fill: #eee;*/
       }
 
+      .ward:hover {
+        opacity: 0.4;
+      }
+
       .hidden {
         display: none;
       }
@@ -46,7 +50,21 @@
         border-radius: 2px;
         opacity: 0.9;
         position: absolute;
-    }
+      }
+
+      /*
+       Fill ranges for Quantized scale 
+       ref: https://bl.ocks.org/mbostock/4060606
+      .q0-9 { fill:rgb(247,251,255); }
+      .q1-9 { fill:rgb(222,235,247); }
+      .q2-9 { fill:rgb(198,219,239); }
+      .q3-9 { fill:rgb(158,202,225); }
+      .q4-9 { fill:rgb(107,174,214); }
+      .q5-9 { fill:rgb(66,146,198); }
+      .q6-9 { fill:rgb(33,113,181); }
+      .q7-9 { fill:rgb(8,81,156); }
+      .q8-9 { fill:rgb(8,48,107); }
+      */
 
     </style>
 
@@ -110,9 +128,13 @@
       var linear = d3.scale.linear()
                    .range(["beige", "red"]);
 
+
+
       /*
       // Linear 2
       // Excluding outliers (but please check the data first)
+      var quantize = d3.scale.quantize()
+                        .range(d3.range(9).map(function(i) { return "q" + i +"-9";}))
       var linear2 = d3.scale.linear()
                    .range(["red", "white", "green"]);
 
@@ -151,10 +173,6 @@
         return ret_value;
       };
 
-      function prettyfy_population(pop){
-
-      };
-
       /**
       *
       * The ready function which after the data is loaded creates all the elements
@@ -190,6 +208,7 @@
           .data(mumbai.features)
           .enter()
             .append("path")
+            .attr("class", "ward")
             .attr("d", path)
         //    Try out the different scales.
             .style("fill", function(d) { 
