@@ -3,8 +3,6 @@
   <meta charset="utf-8">
   <head>
     <title>Mumbai Ward Level Population</title>
-    <!-- Bootstrap Core CSS -->
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
 
     <style>
 
@@ -25,16 +23,30 @@
 
       }
 
-      .precinct {
+      .mumbai {
         fill: #f6f6f6;
         /*fill: #eee;*/
       }
 
-      .precinct-boundary {
+      .hidden {
+        display: none;
+      }
+
+      .mumbai-boundary {
         fill: none;
         stroke: #fff;
         stroke-width: none;
       }
+
+      div.tooltip {
+        color: #222;
+        background-color: #fff;
+        padding: .5em;
+        text-shadow: #f5f5f5 0 1px 0;
+        border-radius: 2px;
+        opacity: 0.9;
+        position: absolute;
+    }
 
     </style>
 
@@ -48,10 +60,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/1.6.19/topojson.min.js"></script>
     <script src="https://d3js.org/queue.v1.min.js"></script>
 
-    <!-- jQuery Version 1.12.3 -->
-    <script   src="https://code.jquery.com/jquery-1.12.3.min.js"   integrity="sha256-aaODHAgvwQW1bFOGXMeX+pC4PZIPsvn2h1sArYOhgXQ="   crossorigin="anonymous"></script>
-    <!-- Bootstrap Core JavaScript -->
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 
     <script>
 
@@ -94,6 +102,9 @@
           .style("text-decoration", "none")  
           .text("Mumbai Ward level population, 2011");
 
+      // Div for the tooltip 
+      var tooltip = d3.select('body').append('div')
+          .attr('class', 'hidden tooltip');
 
       // Defining the scale
       var linear = d3.scale.linear()
@@ -170,41 +181,39 @@
         //console.log(prop_value);
 
         svg.append("g")
-            .attr("class", "precinct")
-            .selectAll("path")
-            .data(mumbai.features)
-            .enter()
+          .attr("class", "mumbai")
+          .selectAll("path")
+          .data(mumbai.features)
+          .enter()
             .append("path")
             .attr("d", path)
         //    Try out the different scales.
             .style("fill", function(d) { 
               return linear(prop_value[d.properties.name]); 
-
             }) // population
-            /*
-            .append('svg:title').text(function(d) {        
-            // return ("GeoID: " + d.id); });
-               return (ward_names[d.properties.name] + ", " + ward_id[d.properties.name] +": " + (prop_value[d.properties.name]) + ""); 
+            .on('mousemove', function(d) {
+              // Gets coordinates for the Mouse pointer
+              var mouse = d3.mouse(svg.node()).map(function(d) {
+                  return parseInt(d);
+              });
+              // Un hides the div for the tooltip and the positions it
+              // Also adds the html content
+              // @TODO: Format the population values to put commas
+              tooltip.classed('hidden', false)
+                  .attr('style', 'left:' + (mouse[0] + 15) +
+                          'px; top:' + (mouse[1] - 35) + 'px')
+                  .html(ward_names[d.properties.name] + ": "+ prop_value[d.properties.name]);
             })
-*/
-            .attr("data-toggle", "popover")
-              .attr("title", function(d){
-               return (ward_names[d.properties.name] + ", " + ward_id[d.properties.name] +": " + (prop_value[d.properties.name]) + ""); 
+            .on('mouseout', function() {
+                tooltip.classed('hidden', true);
+            });
 
-              })
-              .attr("data-content", function(d){
-                return "";
-              })
-            ;
-        $(function () {
-          $('[data-toggle="popover"]').popover({trigger:"hover", content:"content", container:"body", html:true})
-        });
 
 
       //Borders 
       svg.append("path")
           .datum(topojson.mesh(MAP, MAP.objects.Mumbai, function(a, b) { return a !== b; }))
-          .attr("class", "precinct-boundary")
+          .attr("class", "mumbai-boundary")
           .attr("d", path);  
 
       };
