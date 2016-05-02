@@ -130,7 +130,7 @@
           .attr("text-anchor", "start")  
           .style("font-size", "16px") 
           .style("text-decoration", "none")  
-          .text("Mumbai Ward Level (per Sq. KM), 2011");
+          .text("Mumbai Ward Level Map");
 
       // Div for the tooltip 
       var tooltip = d3.select('body').append('div')
@@ -254,11 +254,11 @@
       // Legend 
       svg.append("g")
           .attr("class", "legendLinear")
-          .attr("transform", "translate(100, 100)");
+          .attr("transform", "translate(50, 100)");
 
       var legendLinear = d3.legend.color()
                                   .scale(linear)
-                                  .title("Population Density / Sq. KM")
+                                  .title("Population Density / Sq. KM (2011)")
                                   .labelFormat(d3.format(",.0f"));
       svg.select(".legendLinear")
           .call(legendLinear);
