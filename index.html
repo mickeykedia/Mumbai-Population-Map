@@ -151,6 +151,10 @@
         return ret_value;
       };
 
+      function prettyfy_population(pop){
+
+      };
+
       /**
       *
       * The ready function which after the data is loaded creates all the elements
@@ -202,7 +206,7 @@
               tooltip.classed('hidden', false)
                   .attr('style', 'left:' + (mouse[0] + 15) +
                           'px; top:' + (mouse[1] - 35) + 'px')
-                  .html(ward_names[d.properties.name] + ": "+ prop_value[d.properties.name]);
+                  .html(ward_names[d.properties.name] + ": "+ prop_value[d.properties.name].toLocaleString());
             })
             .on('mouseout', function() {
                 tooltip.classed('hidden', true);
